@@ -18,7 +18,7 @@ contract StringStoreTest is Test {
         string memory name = store.getName();
         assertEq(name, x);
     }
-    
+
     // StringStore (inline-assembly): 14,908 gas
     // StringStoreReference:          15,645 gas
     function test_benchmark_getName() public view {

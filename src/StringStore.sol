@@ -1,13 +1,11 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.13;
+pragma solidity ^0.8.0;
 
 contract StringStore {
-    
     string private name;
-    
+
     function getName() external view returns (string memory) {
         assembly {
-
             // Load free memory pointer.
             let ptr := mload(0x40)
 
@@ -25,10 +23,9 @@ contract StringStore {
             let b := shl(255, s)
 
             if eq(b, 0x00) {
-                
                 // Get string length stored in the final byte.
                 let len := and(s, 0x00000000000000000000000000000000000000000000000000000000000000ff)
-                
+
                 // Store an abi encoded string in memory.
                 // 1st word: offset
                 mstore(ptr, 0x20)
@@ -47,7 +44,7 @@ contract StringStore {
             // Copy the free memory pointer. We'll use it when returning
             let ptrCopy := ptr
 
-            // Get storage slot of string data as keccak256(name.storage_slot) 
+            // Get storage slot of string data as keccak256(name.storage_slot)
             mstore(0x00, name.slot)
             let loc := keccak256(0x00, 0x20)
 
@@ -61,31 +58,29 @@ contract StringStore {
             let len := div(s, 2)
             mstore(ptr, len)
             ptr := add(ptr, 0x20)
-            
+
             // Keep reading successive storage slots till string length is exhausted.
-            for {} sgt(len, 0x00) { len := sub(len, 0x20) }
-            {
+            for {} sgt(len, 0x00) { len := sub(len, 0x20) } {
                 mstore(ptr, sload(loc))
                 loc := add(loc, 1)
                 ptr := add(ptr, 0x20)
-            } 
-            
+            }
+
             // Update free memory pointer
             mstore(0x40, ptr)
-            
+
             // Return abi encoded string.
             return(ptrCopy, sub(ptr, ptrCopy))
         }
     }
-    
+
     function setName(string memory) external {
         assembly {
-
-            // Get length of string. 
+            // Get length of string.
             //
             // First 4 bytes are fn selector. The next 32 bytes are the offset
             // (which we can ignore in this case) where the string data starts.
-            // 
+            //
             // The next 32 bytes are the length of the string and the remaining
             // bytes are the string data.
             let len := calldataload(0x24)
@@ -99,19 +94,18 @@ contract StringStore {
 
                 stop()
             }
-            
+
             // Store (len*2) + 1 at name.storage_slot to indicate that
             // that the string len >= 32 bytes
             sstore(name.slot, add(mul(len, 2), 1))
 
-            // Get storage slot of string data as keccak256(name.storage_slot) 
+            // Get storage slot of string data as keccak256(name.storage_slot)
             mstore(0x00, name.slot)
             let loc := keccak256(0x00, 0x20)
             let offset := 0x44
 
             // Keep storing string data in successive storage slots till string is exhausted.
-            for {} sgt(len, 0x00) { len := sub(len, 0x20) }
-            {
+            for {} sgt(len, 0x00) { len := sub(len, 0x20) } {
                 sstore(loc, calldataload(offset))
                 loc := add(loc, 1)
                 offset := add(offset, 0x20)
