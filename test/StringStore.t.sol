@@ -25,7 +25,7 @@ contract StringStoreTest is Test {
         store.getName();
     }
 
-    // StringStore (inline-assembly): 21,203 gas
+    // StringStore (inline-assembly): 21,023 gas
     // StringStoreReference:          21,734 gas
     function test_benchmark_setName() public {
         store.setName("WhatAboutARidiculouslyLargeNameLike....Tom");

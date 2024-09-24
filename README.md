@@ -6,7 +6,7 @@
 The inline assembly implementation does save gas compared to vanilla Solidity (see `test/StringStore.t.sol`)
 Implementation | getName | setName |
 --- | --- | --- |
-Inline assembly | 14,908 | 21,203 |
+Inline assembly | 14,908 | 21,023 |
 Vanilla Solidity | 15,645 | 21,734 |
 
 If you know of an even more optimized implementation of `StringStore`, please make a PR. I'd love to learn.
