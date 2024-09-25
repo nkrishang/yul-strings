@@ -12,7 +12,7 @@ contract StringStore {
             // Load value at name.storage_slot
             let s := sload(name.slot)
 
-            // For strings of len < 32 bytes, Solidity stores (len * 2) in the final two bits
+            // For strings of len < 32 bytes, Solidity stores (len * 2) in the final byte
             // of the value at name.storage_slot. So, the final bit will always be `0`.
             //
             // For strings of len >= 32 bits, Solidity stores ((len * 2) + 1) as the value at
